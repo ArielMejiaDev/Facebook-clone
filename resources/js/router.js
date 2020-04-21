@@ -8,7 +8,7 @@ Vue.use(VueRouter)
 export default new VueRouter({
     mode: 'history',
     routes: [
-        { path: '/', name: 'home', component: NewsFeed },
-        { path: '/users/:id', name: 'user.show', component: UserShow },
+        { path: '/', name: 'home', component: NewsFeed, meta: { 'title': 'NewsFeed' } },
+        { path: '/users/:id', name: 'user.show', component: UserShow, meta: { 'title': 'Profile' } },
     ]
 })
