@@ -20,11 +20,13 @@ class Post extends JsonResource
                 'id' => $this->id,
                 'attributes' => [
                     'body' => $this->body,
-                    'posted_by' => new User($this->user)
+                    'image' => $this->image,
+                    'posted_at' => $this->created_at->diffForHumans(),
+                    'posted_by' => new User($this->user),
                 ],
             ],
             'links' => [
-                'self' => url("/api/posts/{$this->id}"),
+                'self' => url("/posts/{$this->id}"),
             ]
         ];
     }

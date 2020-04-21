@@ -2,7 +2,7 @@
 
     <div class="flex flex-col items-center py-4">
         <NewPost />
-        <Post />
+        <Post v-for="(post, index) in posts.data" :key="index" :post="post" />
     </div>
 
 </template>
@@ -15,6 +15,18 @@ export default {
     components: {
         NewPost,
         Post,
+    },
+    data: () => {
+        return {
+            posts: null,
+        }
+    },
+    mounted() {
+        axios.get('/api/posts')
+            .then(response => {
+                this.posts = response.data
+            })
+            .catch(errors => console.log(errors.response.errors))
     }
 }
 </script>

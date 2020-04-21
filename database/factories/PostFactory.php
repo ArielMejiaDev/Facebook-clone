@@ -10,5 +10,6 @@ $factory->define(Post::class, function (Faker $faker) {
     return [
         'body'    => $faker->text,
         'user_id' => factory(User::class),
+        'image'   => 'image.jpg'
     ];
 });

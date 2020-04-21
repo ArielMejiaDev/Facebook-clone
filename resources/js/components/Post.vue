@@ -9,21 +9,20 @@
                     <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Avatar" class="h-8 w-8 object-cover rounded-full">
                 </div>
                 <div class="ml-6">
-                    <div class="text-sm font-bold">Username</div>
-                    <div class="text-xs text-gray-600">12 Mins</div>
+                    <div class="text-sm font-bold">{{ post.data.attributes.posted_by.data.attributes.name }}</div>
+                    <div class="text-xs text-gray-600">{{ post.data.attributes.posted_at }}</div>
                 </div>
             </div>
 
             <div class="mt-4">
-                <p>Not having fun at all.</p>
+                <p>{{ post.data.attributes.body }}</p>
             </div>
 
         </div>
 
-        <div class="w-full">
-            <img
-                src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjExMDk0fQ&w=1000&q=80"
-                alt="Post image" class="w-full">
+            <div v-if="post.data.attributes.image" class="w-full">
+                <img :src="post.data.attributes.image" alt="Post image" class="w-full">
+            </div>
 
             <div class="p-4 text-sm text-gray-700 flex justify-between items-center">
                 <div class="flex items-center">
@@ -61,5 +60,8 @@ export default {
         LikeIcon,
         CommentIcon,
     },
+    props: [
+        'post',
+    ]
 }
 </script>

@@ -52,7 +52,7 @@ class PostToTimelineTest extends TestCase
                 ],
             ],
             'links' => [
-                'self' => url("/api/posts/{$post->id}"),
+                'self' => url("/posts/{$post->id}"),
             ]
         ]);
 
@@ -77,6 +77,8 @@ class PostToTimelineTest extends TestCase
                         'id' => $posts->last()->id,
                         'attributes' => [
                             'body' => $posts->last()->body,
+                            'image' => $posts->last()->image,
+                            'posted_at' => $posts->last()->created_at->diffForHumans(),
                         ],
                     ],
                 ],
@@ -85,12 +87,14 @@ class PostToTimelineTest extends TestCase
                         'type' => 'posts',
                         'id'   => $posts->first()->id,
                         'attributes' => [
-                            'body' => $posts->first()->body
+                            'body' => $posts->first()->body,
+                            'image' => $posts->first()->image,
+                            'posted_at' => $posts->first()->created_at->diffForHumans(),
                         ]
                     ]
                 ],
             ],
-            'links' => url('/api/posts')
+            'links' => url('/posts')
         ]);
 
     }
@@ -105,7 +109,7 @@ class PostToTimelineTest extends TestCase
         $response = $this->get('/api/posts');
         $response->assertStatus(200)->assertExactJson([
             'data' => [],
-            'links' => url('/api/posts')
+            'links' => url('/posts')
         ]);
 
     }

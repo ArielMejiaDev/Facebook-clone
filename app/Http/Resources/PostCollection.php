@@ -16,7 +16,7 @@ class PostCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection,
-            'links' => url('/api/posts')
+            'links' => url('/posts')
         ];
     }
 }
