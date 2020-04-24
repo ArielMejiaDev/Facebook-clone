@@ -11,6 +11,8 @@ Route::middleware('auth:api')->group(function() {
     // All crud actions
     Route::apiResources([
         '/posts' => 'Post\\PostController',
+        '/posts/{post}/like' => 'Post\\PostLikeController',
+        '/posts/{post}/comment' => 'Post\\PostCommentController',
         '/users' => 'User\\UserController',
         '/users/{user}/posts' => 'User\\Post\\UserPostController',
         '/friend-request' => 'FriendRequest\\FriendRequestController',

@@ -49,7 +49,8 @@ class FriendRequestController extends Controller
         // (new CustomValidation)->validate(['friend_id' => 'required']);
 
         try {
-            User::findOrFail($request->friend_id)->friends()->attach(auth()->user());
+            // User::findOrFail($request->friend_id)->friends()->attach(auth()->user());
+            User::findOrFail($request->friend_id)->friends()->syncWithoutDetaching(auth()->user());
         } catch (ModelNotFoundException $e) {
             throw new UserNotFoundException();
         }

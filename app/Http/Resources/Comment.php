@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Resources;
-
+use App\Http\Resources\User as UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class Post extends JsonResource
+class Comment extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,19 +16,16 @@ class Post extends JsonResource
     {
         return [
             'data' => [
-                'type' => 'posts',
+                'type' => 'comments',
                 'id' => $this->id,
                 'attributes' => [
+                    'commented_by' => new UserResource($this->user),
                     'body' => $this->body,
-                    'image' => $this->image,
-                    'posted_at' => $this->created_at->diffForHumans(),
-                    'posted_by' => new User($this->user),
-                    'likes' => new LikeCollection($this->likes),
-                    'comments' => new CommentCollection($this->comments)
+                    'commented_at' => $this->created_at->diffForHumans(),
                 ],
             ],
             'links' => [
-                'self' => url("/posts/{$this->id}"),
+                'self' => url("/posts/$this->post_id")
             ]
         ];
     }

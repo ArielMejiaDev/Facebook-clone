@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col items-center">
+    <div class="flex flex-col items-center" v-if="status.user === 'success' && user">
         <div class="relative w-full mb-8">
 
             <div class="w-100 h-64 overflow-hidden z-10">
@@ -21,45 +21,52 @@
 
             </div>
 
+            <div class="absolute bottom-0 right-0 mb-4 mr-12 z-20 flex items-center">
+                <button v-if="friendButtonText && friendButtonText !== 'accepted'" class="py-1 px-3 bg-gray-400 rounded" @click="$store.dispatch('sendFriendRequest', $route.params.id)">
+                    {{ friendButtonText }}
+                </button>
+                <button v-if="friendButtonText && friendButtonText === 'accepted'" class="py-1 px-3 bg-blue-500 rounded mr-2 text-white" @click="$store.dispatch('acceptFriendRequest', $route.params.id)">
+                    Accepted
+                </button>
+                <button v-if="friendButtonText && friendButtonText === 'accepted'" class="py-1 px-3 bg-gray-400 rounded" @click="$store.dispatch('ignoreFriendRequest', $route.params.id)">
+                    Ignore
+                </button>
+            </div>
+
         </div>
 
-        <p v-if="postsLoading">Loading ...</p>
+        <p v-if="status.posts === 'loading'">Loading ...</p>
+
+        <p v-else-if="posts.length < 1">No posts found. Get started...</p>
 
         <Post v-else v-for="(post, index) in posts.data" :key="index" :post="post" />
-
-        <p v-if="! postsLoading && posts.data.length < 1">No posts found. Get started...</p>
 
     </div>
 </template>
 
 <script>
 import Post from '../../components/Post'
+import {mapGetters} from 'vuex'
 export default {
     name: 'UserShow',
     components: {
         Post,
     },
-    data: () => {
-        return {
-            user: null,
-            posts: null,
-            userLoading: true,
-            postsLoading: true,
-        }
-    },
     mounted() {
-        axios.get(`/api/users/${this.$route.params.id}`)
-            .then(response => this.user = response.data)
-            .catch(errors => console.log(errors.response.errors))
-            .finally(() => this.userLoading = false)
 
-        axios.get(`/api/users/${this.$route.params.id}/posts`)
-            .then(response => {
-                console.log(response)
-                this.posts = response.data
-            })
-            .catch(errors => console.log(errors.response.errors))
-            .finally(() => this.postsLoading = false)
+        this.$store.dispatch('fetchUser', this.$route.params.id)
+
+        this.$store.dispatch('fetchUserPosts', this.$route.params.id)
+
+    },
+
+    computed: {
+        ...mapGetters({
+            user: 'user',
+            posts: 'posts',
+            status: 'status',
+            friendButtonText: 'friendButtonText'
+        })
     }
 }
 </script>

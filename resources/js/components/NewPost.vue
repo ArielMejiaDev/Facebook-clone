@@ -5,8 +5,16 @@
             <div>
                 <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Avatar" class="h-8 w-8 object-cover rounded-full">
             </div>
-            <div class="flex-1 mx-2">
-                <input type="text" name="body" class="w-full pl-4 h-8 rounded text-sm bg-gray-200 focus:outline-none focus:shadow-outline" placeholder="Add a new post">
+            <div class="flex-1 flex mx-2">
+                <input v-model="postMessage" type="text" name="body" class="w-full pl-4 h-8 rounded text-sm bg-gray-200 focus:outline-none focus:shadow-outline" placeholder="Add a new post">
+                <transition name="fade">
+                    <button
+                        class="ml-2 bg-gray-200 px-3 py-1 rounded-full focus:outline-none focus:shadow-outline"
+                        v-if="postMessage"
+                        @click="$store.dispatch('postMessage')">
+                        Post
+                    </button>
+                </transition>
             </div>
             <div>
                 <button class="bg-gray-200 rounded-full p-2">
@@ -19,7 +27,38 @@
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
     name: 'NewPost',
+    computed: {
+        postMessage: {
+            get() {
+                return this.$store.getters.postMessage
+            },
+            // without debounce
+            // set(postMessage) {
+            //     this.$store.commit('updateMessage', postMessage)
+            // },
+            set: _.debounce(function(postMessage) {
+                this.$store.commit('updateMessage', postMessage)
+            }, 300)
+        }
+    }
 }
 </script>
+
+<style scoped>
+    /* order of the animation class goes
+    .fade-enter
+    .fade-enter-active
+    .fade-leave-active
+    .fade-leave-to */
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
+    }
+</style>

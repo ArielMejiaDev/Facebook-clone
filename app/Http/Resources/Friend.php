@@ -19,8 +19,8 @@ class Friend extends JsonResource
                 'type' => 'friend-request',
                 'friend_request_id' => $this->id,
                 'attributes' => [
-                    // 'user_id' => $user->id,
-                    // 'friend_id' => $anotherUser->id,
+                    'user_id'      => $this->user_id,
+                    'friend_id'    => $this->friend_id,
                     'confirmed_at' => optional($this->confirmed_at)->diffForHumans(),
                 ]
             ],

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Friend;
 use App\Post;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,12 +22,13 @@ class PostToTimelineTest extends TestCase
         $this->actingAs($user = factory(User::class)->create(), 'api');
 
         $response = $this->post('/api/posts', [
-            'data' => [
-                'type' => 'posts',
-                'attributes' => [
-                    'body' => 'Testing Body'
-                ]
-            ]
+            // 'data' => [
+            //     'type' => 'posts',
+            //     'attributes' => [
+            //         'body' => 'Testing Body'
+            //     ]
+            // ]
+            'body' => 'Testing Body'
         ]);
 
         $post = Post::first();
@@ -67,7 +69,16 @@ class PostToTimelineTest extends TestCase
 
         $this->actingAs($user = factory(User::class)->create(), 'api');
 
-        $posts = factory(Post::class, 2)->create(['user_id' => $user->id]);
+        $anotherUser = factory(User::class)->create();
+
+        Friend::create([
+            'user_id'      => $user->id,
+            'friend_id'    => $anotherUser->id,
+            'confirmed_at' => now(),
+            'status'       => 'accepted',
+        ]);
+
+        $posts = factory(Post::class, 2)->create(['user_id' => $anotherUser->id]);
 
         $this->get('/api/posts')->assertJson([
             'data' => [
