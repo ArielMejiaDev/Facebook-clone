@@ -6,7 +6,7 @@
 
             <div class="flex items-center">
                 <div class="w-8">
-                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Avatar" class="h-8 w-8 object-cover rounded-full">
+                    <img :src="post.data.attributes.posted_by.data.attributes.profile_image.data.attributes.path" alt="Avatar" class="h-8 w-8 object-cover rounded-full">
                 </div>
                 <div class="ml-6">
                     <div class="text-sm font-bold">{{ post.data.attributes.posted_by.data.attributes.name }}</div>
@@ -66,7 +66,8 @@
                     :key="index"
                     class="flex my-4 items-center">
                     <div class="w-8">
-                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Avatar" class="h-8 w-8 object-cover rounded-full">
+                        <img
+                            :src="comment.data.attributes.commented_by.data.attributes.profile_image.data.attributes.path" alt="Avatar" class="h-8 w-8 object-cover rounded-full">
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="bg-gray-200 rounded p-2 text-sm">

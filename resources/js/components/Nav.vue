@@ -13,7 +13,7 @@
                 <HomeIcon />
             </router-link>
             <router-link :to="`/users/${authUser.data.id}`" class="mx-6 border-b-2 border-white h-full w-12 flex justify-center items-center">
-                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Avatar" class="h-8 w-8 object-cover rounded-full">
+                <img :src="authUser.data.attributes.profile_image.data.attributes.path" alt="Avatar" class="h-8 w-8 object-cover rounded-full">
             </router-link>
             <router-link to="/" class="mx-6 border-b-2 border-white h-full w-12 flex justify-center items-center">
                 <MessengerIcon />

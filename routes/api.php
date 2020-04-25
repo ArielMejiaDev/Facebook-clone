@@ -16,7 +16,8 @@ Route::middleware('auth:api')->group(function() {
         '/users' => 'User\\UserController',
         '/users/{user}/posts' => 'User\\Post\\UserPostController',
         '/friend-request' => 'FriendRequest\\FriendRequestController',
-        '/friend-request-response' => 'FriendRequest\\FriendRequestResponseController'
+        '/friend-request-response' => 'FriendRequest\\FriendRequestResponseController',
+        'user-images' => 'Images\\UserImagesController',
     ]);
 
 });

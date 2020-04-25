@@ -3,7 +3,10 @@
     <div class="bg-white rounded shadow w-2/3 p-4">
         <div class="flex justify-between items-center">
             <div>
-                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" alt="Avatar" class="h-8 w-8 object-cover rounded-full">
+                <img
+                    :src="authUser.data.attributes.profile_image.data.attributes.path"
+                    alt="Avatar"
+                    class="h-8 w-8 object-cover rounded-full">
             </div>
             <div class="flex-1 flex mx-2">
                 <input v-model="postMessage" type="text" name="body" class="w-full pl-4 h-8 rounded text-sm bg-gray-200 focus:outline-none focus:shadow-outline" placeholder="Add a new post">
@@ -28,10 +31,12 @@
 
 <script>
 import _ from 'lodash'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'NewPost',
     computed: {
+        // this is like a v-model but binded directly to a module state of vuex by getters and setters directly
         postMessage: {
             get() {
                 return this.$store.getters.postMessage
@@ -43,7 +48,10 @@ export default {
             set: _.debounce(function(postMessage) {
                 this.$store.commit('updateMessage', postMessage)
             }, 300)
-        }
+        },
+        ...mapGetters({
+            authUser: 'authUser',
+        })
     }
 }
 </script>

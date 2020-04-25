@@ -3,18 +3,31 @@
         <div class="relative w-full mb-8">
 
             <div class="w-100 h-64 overflow-hidden z-10">
-                <img
-                    src="https://s1.best-wallpaper.net/wallpaper/m/1808/Art-picture-mountains-trees-sun-deer_m.jpg"
-                    alt="Profile picture"
-                    class="w-full object-cover">
+                <UploadableImage
+                        :image-width="1200"
+                        :image-height="500"
+                        :location="'cover'"
+                        :user-image="user.data.attributes.cover_image"
+                        :classes="'w-full object-cover'"
+                        :alt="'user background image'"
+                    />
             </div>
 
             <div class="absolute bottom-0 left-0 -mb-8 ml-12 z-20 flex items-center">
 
                 <div class="w-32">
-                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"
+                    <UploadableImage
+                        :image-width="750"
+                        :image-height="750"
+                        :location="'profile'"
+                        :user-image="user.data.attributes.profile_image"
+                        :classes="'object-cover h-32 w-32 border-4 border-gray-200 rounded-full shadow-lg'"
+                        :alt="'user profile image'"
+                    />
+                    <!-- <img
+                        src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80"
                         alt="Profile picture"
-                        class="object-cover h-32 w-32 border-4 border-gray-200 rounded-full shadow-lg">
+                        class="object-cover h-32 w-32 border-4 border-gray-200 rounded-full shadow-lg"> -->
                 </div>
 
                 <p v-if="user" class="text-2xl text-gray-100 ml-4">{{ user.data.attributes.name }}</p>
@@ -47,10 +60,12 @@
 <script>
 import Post from '../../components/Post'
 import {mapGetters} from 'vuex'
+import UploadableImage from '../../components/UploadableImage'
 export default {
     name: 'UserShow',
     components: {
         Post,
+        UploadableImage,
     },
     mounted() {
 
