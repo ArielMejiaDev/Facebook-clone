@@ -65,8 +65,10 @@ export default {
 
     .fade-enter-active, .fade-leave-active {
         transition: opacity .5s;
+        scale: 0;
     }
     .fade-enter, .fade-leave-to {
         opacity: 0;
+        scale: 1;
     }
 </style>

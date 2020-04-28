@@ -7,12 +7,20 @@ use App\Post;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PostToTimelineTest extends TestCase
 {
 
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Storage::fake('public');
+    }
 
     /** @test */
     public function a_user_can_post_a_text_post()
@@ -88,7 +96,7 @@ class PostToTimelineTest extends TestCase
                         'id' => $posts->last()->id,
                         'attributes' => [
                             'body' => $posts->last()->body,
-                            'image' => $posts->last()->image,
+                            'image' => url($posts->last()->image),
                             'posted_at' => $posts->last()->created_at->diffForHumans(),
                         ],
                     ],
@@ -99,7 +107,7 @@ class PostToTimelineTest extends TestCase
                         'id'   => $posts->first()->id,
                         'attributes' => [
                             'body' => $posts->first()->body,
-                            'image' => $posts->first()->image,
+                            'image' => url($posts->first()->image),
                             'posted_at' => $posts->first()->created_at->diffForHumans(),
                         ]
                     ]
@@ -109,7 +117,6 @@ class PostToTimelineTest extends TestCase
         ]);
 
     }
-
 
     /** @test */
     public function a_user_can_only_retrieve_their_posts()
@@ -122,6 +129,39 @@ class PostToTimelineTest extends TestCase
             'data' => [],
             'links' => url('/posts')
         ]);
+
+    }
+
+    /** @test */
+    public function a_user_can_post_a_text_post_with_an_image()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->actingAs($user = factory(User::class)->create(), 'api');
+
+        $file = UploadedFile::fake()->image('user-post.jpg');
+
+        $response = $this->post('/api/posts', [
+            'body' => 'Testing Body',
+            'image' => $file,
+            'width' => 100,
+            'height' => 100,
+        ]);
+
+        Storage::disk('public')->assertExists("post-images/{$file->hashName()}");
+
+        // $post = Post::first();
+
+        $response->assertStatus(201)->assertJson([
+            'data' => [
+                'attributes' => [
+                    'body' => 'Testing Body',
+                    'image' => url("post-images/{$file->hashName()}"),
+                ],
+            ],
+        ]);
+
+
 
     }
 

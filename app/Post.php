@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Post extends Model
 {
     protected $fillable = [
-        'body', 'user_id'
+        'body', 'user_id', 'image',
     ];
 
     protected static function boot()
