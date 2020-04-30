@@ -1,5 +1,5 @@
 const mix = require('laravel-mix')
-
+require('laravel-mix-purgecss')
 const tailwindcss = require('tailwindcss')
 
 /*
@@ -18,6 +18,6 @@ mix.js('resources/js/app.js', 'public/js')
         .options({
             processCssUrls: false,
             postCss: [ tailwindcss('./tailwind.config.js') ],
-        })
+        }).purgeCss()
 
 mix.browserSync('facebook-clone.test')
