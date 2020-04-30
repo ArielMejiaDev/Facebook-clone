@@ -69,9 +69,6 @@ class PostController extends Controller
             ->save(storage_path("app/public/user-images/{$request->image->hashName()}"));
         }
 
-
-
-
         // $post = request()->user()->posts()->create($request['data']['attributes']);
 
         $post = request()->user()->posts()->create([

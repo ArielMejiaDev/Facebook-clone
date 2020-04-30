@@ -2174,6 +2174,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var dropzone__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! dropzone */ "./node_modules/dropzone/dist/dropzone.js");
+/* harmony import */ var dropzone__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(dropzone__WEBPACK_IMPORTED_MODULE_2__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -2211,10 +2213,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'NewPost',
+  data: function data() {
+    return {
+      dropzone: null
+    };
+  },
+  mounted: function mounted() {
+    this.dropzone = new dropzone__WEBPACK_IMPORTED_MODULE_2___default.a(this.$refs.postImage, this.settings);
+  },
   computed: _objectSpread({
     // this is like a v-model but binded directly to a module state of vuex by getters and setters directly
     postMessage: {
@@ -2231,7 +2259,52 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])({
     authUser: 'authUser'
-  }))
+  }), {
+    settings: function settings() {
+      var _this = this;
+
+      return {
+        paramName: 'image',
+        url: '/api/posts',
+        acceptedFiles: 'image/*',
+        clickable: '.dz-clickable',
+        autoProcessQueue: false,
+        previewsContainer: '.dropzone-previews',
+        previewTemplate: document.querySelector('#dz-template').innerHTML,
+        maxFiles: 1,
+        params: {
+          width: 1000,
+          height: 1000
+        },
+        headers: {
+          'X-CSRF-TOKEN': document.head.querySelector('meta[name=csrf-token]').content
+        },
+        sending: function sending(file, xhr, formData) {
+          formData.append('body', _this.$store.getters.postMessage);
+        },
+        success: function success(event, response) {
+          _this.dropzone.removeAllFiles();
+
+          _this.$store.commit('pushPost', response);
+        },
+        maxfilesexceeded: function maxfilesexceeded(file) {
+          _this.dropzone.removeAllFiles();
+
+          _this.dropzone.addFile(file);
+        }
+      };
+    }
+  }),
+  methods: {
+    postHandler: function postHandler() {
+      if (this.dropzone.getAcceptedFiles().length) {
+        this.dropzone.processQueue();
+      }
+
+      this.$store.dispatch('postMessage');
+      this.$store.commit('updateMessage', '');
+    }
+  }
 });
 
 /***/ }),
@@ -2663,7 +2736,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "/* order of the animation class goes\n.fade-enter\n.fade-enter-active\n.fade-leave-active\n.fade-leave-to */\n.fade-enter-active[data-v-4f84dfc5], .fade-leave-active[data-v-4f84dfc5] {\n  transition: opacity .5s;\n}\n.fade-enter[data-v-4f84dfc5], .fade-leave-to[data-v-4f84dfc5] {\n  opacity: 0;\n}\n", ""]);
+exports.push([module.i, "/* order of the animation class goes\n.fade-enter\n.fade-enter-active\n.fade-leave-active\n.fade-leave-to */\n.fade-enter-active[data-v-4f84dfc5], .fade-leave-active[data-v-4f84dfc5] {\n  transition: opacity .5s;\n  scale: 0;\n}\n.fade-enter[data-v-4f84dfc5], .fade-leave-to[data-v-4f84dfc5] {\n  opacity: 0;\n  scale: 1;\n}\n", ""]);
 
 // exports
 
@@ -25179,11 +25252,7 @@ var render = function() {
                   {
                     staticClass:
                       "ml-2 bg-gray-200 px-3 py-1 rounded-full focus:outline-none focus:shadow-outline",
-                    on: {
-                      click: function($event) {
-                        return _vm.$store.dispatch("postMessage")
-                      }
-                    }
+                    on: { click: _vm.postHandler }
                   },
                   [_vm._v("\n                    Post\n                ")]
                 )
@@ -25194,31 +25263,76 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("div", [
-        _c("button", { staticClass: "bg-gray-200 rounded-full p-2" }, [
-          _c(
-            "svg",
-            {
-              staticClass: "fill-current w-5 h-5",
-              attrs: {
-                xmlns: "http://www.w3.org/2000/svg",
-                viewBox: "0 0 24 24"
-              }
-            },
-            [
-              _c("path", {
+        _c(
+          "button",
+          {
+            ref: "postImage",
+            staticClass:
+              "bg-gray-200 rounded-full p-2 focus:outline-none focus:shadow-outline dz-clickable"
+          },
+          [
+            _c(
+              "svg",
+              {
+                staticClass:
+                  "fill-current w-5 h-5 dz-clickable focus:outline-none",
                 attrs: {
-                  d:
-                    "M21.8 4H2.2c-.2 0-.3.2-.3.3v15.3c0 .3.1.4.3.4h19.6c.2 0 .3-.1.3-.3V4.3c0-.1-.1-.3-.3-.3zm-1.6 13.4l-4.4-4.6c0-.1-.1-.1-.2 0l-3.1 2.7-3.9-4.8h-.1s-.1 0-.1.1L3.8 17V6h16.4v11.4zm-4.9-6.8c.9 0 1.6-.7 1.6-1.6 0-.9-.7-1.6-1.6-1.6-.9 0-1.6.7-1.6 1.6.1.9.8 1.6 1.6 1.6z"
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 24 24"
                 }
-              })
-            ]
-          )
+              },
+              [
+                _c("path", {
+                  attrs: {
+                    d:
+                      "M21.8 4H2.2c-.2 0-.3.2-.3.3v15.3c0 .3.1.4.3.4h19.6c.2 0 .3-.1.3-.3V4.3c0-.1-.1-.3-.3-.3zm-1.6 13.4l-4.4-4.6c0-.1-.1-.1-.2 0l-3.1 2.7-3.9-4.8h-.1s-.1 0-.1.1L3.8 17V6h16.4v11.4zm-4.9-6.8c.9 0 1.6-.7 1.6-1.6 0-.9-.7-1.6-1.6-1.6-.9 0-1.6.7-1.6 1.6.1.9.8 1.6 1.6 1.6z"
+                  }
+                })
+              ]
+            )
+          ]
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _vm._m(0)
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "dropzone-previews" }, [
+      _c("div", { staticClass: "hidden", attrs: { id: "dz-template" } }, [
+        _c("div", { staticClass: "dz-preview dz-file-preview mt-4" }, [
+          _c("div", { staticClass: "dz-details" }, [
+            _c("img", {
+              staticClass: "w-32 h-32",
+              attrs: { "data-dz-thumbnail": "" }
+            }),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "text-xs text-red-500 font-bold",
+                attrs: { "data-dz-remove": "" }
+              },
+              [_vm._v("Remove")]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "dz-progress" }, [
+            _c("span", {
+              staticClass: "dz-upload",
+              attrs: { "data-dz-upload": "" }
+            })
+          ])
         ])
       ])
     ])
-  ])
-}
-var staticRenderFns = []
+  }
+]
 render._withStripped = true
 
 
@@ -25276,7 +25390,7 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _vm.post.data.attributes.image
+      _vm.post.data.attributes.image.length
         ? _c("div", { staticClass: "w-full" }, [
             _c("img", {
               staticClass: "w-full",
@@ -43530,8 +43644,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/ariel/Developer/Backend/Laravel/facebook-clone/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/ariel/Developer/Backend/Laravel/facebook-clone/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/ariel/Developer/Facebook-clone/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/ariel/Developer/Facebook-clone/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
